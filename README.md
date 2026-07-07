@@ -1,9 +1,13 @@
-# Literature Search
+# Cross-Database Literature Search
 
-A simple tool to search **PubMed, Embase, Scopus, and Google Scholar** at once.
-You type your search string(s) into a web page, tick the databases and any
-exclusion criteria you want, click **Search**, and it saves the results as
-**CSV spreadsheet files** you can open in Excel.
+A simple tool to search **PubMed, OpenAlex, Crossref, Embase, Scopus, and
+Google Scholar** at once. You type your search string(s) into a web page, tick
+the databases and any exclusion criteria you want, click **Search**, and it
+saves the results as **CSV spreadsheet files** you can open in Excel. It can
+also **merge and de-duplicate** results across databases.
+
+**PubMed, OpenAlex and Crossref are free and need no API key** (just an email),
+so the tool is useful straight away without any institutional access.
 
 You do **not** need to know any programming to use it.
 
@@ -27,7 +31,7 @@ You only ever need the **launcher** for your computer. Everything else lives
 inside the `app` folder, which you can ignore.
 
 ```
-literature_search/
+Cross_database_Api/
 ├── run_windows.bat        ← double-click on Windows
 ├── run_macos.command      ← double-click on macOS
 ├── run_linux.sh           ← double-click on Linux
@@ -40,7 +44,7 @@ literature_search/
 
 ## 3. How to start it
 
-Open the `literature_search` folder and **double-click the launcher for your system**:
+Open the `Cross_database_Api` folder and **double-click the launcher for your system**:
 
 | Your computer | Double-click this file |
 |---------------|------------------------|
@@ -84,18 +88,36 @@ time only). Then your web browser opens at `http://127.0.0.1:5000`.
 
 ### What files you get, per search string
 
-- one CSV **per database** (e.g. `..._q1_mysearch_pubmed.csv`), and
+- one CSV **per database** (e.g. `..._q1_mysearch_pubmed.csv`),
 - one **MERGED** CSV combining all ticked databases with duplicates removed
-  (e.g. `..._q1_mysearch_MERGED.csv`).
+  (e.g. `..._q1_mysearch_MERGED.csv`), and
+- if you run several search strings, one **ALL_MERGED** CSV that is unique
+  across every string and database.
 
 Columns: Source, Title, Authors, Year, Venue, PubTypes, DOI, Abstract, URL,
 Citations, RecordID.
 
+### Removing duplicates
+
+Merging always removes duplicates. You choose how strict via **Duplicate
+matching**:
+
+- **Fuzzy** *(default, ASySD-style)* — matches on DOI, or on very similar
+  titles backed up by matching year and overlapping authors. Best for combining
+  different databases, where titles vary slightly.
+- **DOI + title + author**, **DOI + title**, or **DOI only** — exact-match
+  options if you want tighter or looser control.
+
+There's also a standalone **“Remove duplicates across saved CSVs”** tool on the
+page: tick any result files (from any run/database) and merge them into one
+de-duplicated CSV.
+
 ### A note on exclusions
 
-Exclusions work by **publication type**, which **PubMed, Scopus and Embase**
-provide. **Google Scholar does not** report publication types, so exclusions
-can't filter Scholar results — those come through unfiltered by design.
+Exclusions work by **publication type**, which **PubMed, OpenAlex, Crossref,
+Scopus and Embase** provide. **Google Scholar does not** report publication
+types, so exclusions can't filter Scholar results — those come through
+unfiltered by design.
 
 ---
 
@@ -106,10 +128,18 @@ Paste keys into the **“API keys”** section on the page, or set them once in
 
 | Database | Key needed? | How to get it / notes |
 |----------|-------------|-----------------------|
-| **PubMed** | Just your **email**. Optional free API key = faster. | https://www.ncbi.nlm.nih.gov/account/ |
+| **PubMed** | No key — just your **email**. Optional free API key = faster. | https://www.ncbi.nlm.nih.gov/account/ |
+| **OpenAlex** | **No key.** Uses your email for a faster "polite pool." | https://openalex.org |
+| **Crossref** | **No key.** Uses your email for a faster "polite pool." | https://www.crossref.org |
 | **Google Scholar** | Yes — a **SerpAPI key**. | https://serpapi.com/manage-api-key (free tier has a monthly limit) |
 | **Scopus** | Free **Elsevier key**, but **only returns results on your university network** (or with an institutional token). | https://dev.elsevier.com/ |
 | **Embase** | **Paid institutional** Elsevier Embase entitlement. Most individuals don't have this. | Ask your university library |
+
+> **Note on search syntax:** PubMed, Scopus and Embase support precise boolean
+> queries (`AND`/`OR`/parentheses/field tags). **OpenAlex, Crossref and Google
+> Scholar treat your query as keywords** (relevance search), so complex boolean
+> logic isn't applied exactly — great for free, broad coverage, less so for a
+> tightly controlled search.
 
 If a database is ticked but has no key/access, it's **skipped with a message** —
 the app never crashes.
