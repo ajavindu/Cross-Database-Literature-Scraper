@@ -110,7 +110,7 @@ PAGE = """
       <p class="hint">Each search string is saved as its own set of CSV files. Add as many as you like.</p>
       <div id="queries">
         <div class="queryblock">
-          <input class="qname" name="qname" placeholder="Optional short name (e.g. couples_help_seeking)">
+          <input class="qname" name="qname" placeholder="Optional short name (e.g. magnesium_sleep_rem)">
           <textarea name="queries" placeholder="Type your search string here..."></textarea>
         </div>
       </div>
